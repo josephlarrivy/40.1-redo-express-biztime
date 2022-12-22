@@ -4,8 +4,12 @@ const db = require("../db");
 
 
 router.get("/", async (req, res, next) => {
-    let result = await db.query(`SELECT * FROM companies`)
-    return res.json({ companies: result.rows })
+    try {
+        let result = await db.query(`SELECT * FROM companies`)
+        return res.json({ companies: result.rows })
+    } catch (e) {
+        next(e)
+    }
 })
 
 router.get("/:code", async (req, res, next) => {
