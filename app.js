@@ -6,12 +6,14 @@ const app = express();
 
 const companyRoutes = require("./routes/companies");
 const invoiceRoutes = require("./routes/invoices");
+const industriesRoutes = require("./routes/industries")
 
 const ExpressError = require("./expressError")
 
 app.use(express.json());
 app.use("/companies", companyRoutes);
 app.use("/invoices", invoiceRoutes);
+app.use("/industries", industriesRoutes)
 
 
 
