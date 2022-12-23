@@ -22,10 +22,10 @@ router.get("/:id", async (req, res, next) => {
     }
 })
 
-router.post("/", (req, res, next) => {
+router.post("/", async (req, res, next) => {
     let { comp_code, amt } = req.body;
     try {
-        let result = db.query('INSERT INTO invoices (comp_code, amt, paid, paid_date) VALUES ($1, $2, $3, $4)', [comp_code, amt, false, null])
+        let result = await db.query('INSERT INTO invoices (comp_code, amt, paid, paid_date) VALUES ($1, $2, $3, $4)', [comp_code, amt, false, null])
         return res.json({msg: "created"})
     } catch (e) {
         next(e)
@@ -34,9 +34,9 @@ router.post("/", (req, res, next) => {
 
 router.put("/:id", async (req, res, next) => {
     let id  = req.params.id;
-    let { amt } = req.body;
+    let payingAmt = req.body.amt;
     try {
-        let result = db.query('UPDATE invoices SET amt = $2 WHERE id = $1', [id, amt])
+        let result = await db.query('UPDATE invoices SET amt = $2 WHERE id = $1', [id, payingAmt])
         return res.json({msg: "updated"})
     } catch (e) {
         next(e)
@@ -46,30 +46,22 @@ router.put("/:id", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
     try {
         let id = req.params.id;
-        let result = db.query('DELETE FROM invoices WHERE id = $1', [id])
+        let result = await db.query('DELETE FROM invoices WHERE id = $1', [id])
         return res.json({status: "deleted"})
     } catch (e) {
         next(e)
     }
 })
 
-router.get("/:code", (req, res, next) => {
+router.get("/:code", async (req, res, next) => {
     try {
         let code = req.params.code;
-        let result = db.query('SELECT * FROM companies WHERE comp_code = $1', [code])
-        // return res.send(code)
+        let result = await db.query('SELECT * FROM companies WHERE comp_code = $1', [code])
         return res.json({company: result})
     } catch (e) {
         next(e)
     }
 })
-
-
-
-
-
-
-
 
 
 module.exports = router;

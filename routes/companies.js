@@ -1,6 +1,7 @@
 const express = require("express");
 const router = new express.Router();
 const db = require("../db");
+const slugify = require("slugify")
 
 
 router.get("/", async (req, res, next) => {
@@ -24,7 +25,8 @@ router.get("/:code", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-        let { code, name, description } = req.body;
+        let { name, description } = req.body;
+        let code = slugify(name)
         let result = await db.query(
             'INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING code, name, description', [code, name, description])
         return res.status(200).json(result.rows)
@@ -48,7 +50,6 @@ router.put("/:code", async (req, res, next) => {
 router.delete("/:code", async (req, res, next) => {
     let code = req.params.code;
     try {
-        // let { name, description } = req.body;
         let result = await db.query(
             'DELETE FROM companies WHERE code = $1', [code]);
         return res.json({ message: "Deleted" })
